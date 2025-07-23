@@ -14,7 +14,9 @@ def find_search_on_url(url):
 
 
 def find_search_on_html(s: str, base_url):
-    link = bs4.BeautifulSoup(s, features="lxml").find("link", attrs={"rel": "search"})
+    link = bs4.BeautifulSoup(s, features="html.parser").find(
+        "link", attrs={"rel": "search"}
+    )
     href = link.attrs["href"]
     href = urllib.parse.urlparse(href)
     base_url = urllib.parse.urlparse(base_url)
