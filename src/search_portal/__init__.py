@@ -5,6 +5,10 @@ import bs4
 import httpx
 
 
+def opensearch_from_url(url):
+    return OpenSearch(httpx.get(find_search_on_url(url)).read())
+
+
 def find_search_on_url(url):
     """
     >>> find_search_on_url("https://eu.wikipedia.org")
