@@ -1,12 +1,24 @@
+import argparse
+import pathlib
+import tomllib
 import urllib.parse
 from xml.etree import ElementTree
 
 import bs4
+import htmlgenerator
 import httpx
 
 
 def opensearch_from_url(url):
-    return OpenSearch(httpx.get(find_search_on_url(url)).read())
+    try:
+        return OpenSearch(httpx.get(find_search_on_url(url)).read())
+    except:
+        pass
+    try:
+        return OpenSearch(httpx.get(url).read())
+    except:
+        pass
+    raise Exception(f"could not find opensearch on {url}")
 
 
 def find_search_on_url(url):
@@ -19,9 +31,8 @@ def find_search_on_url(url):
 
 
 def find_search_on_html(s: str, base_url):
-    link = bs4.BeautifulSoup(s, features="html.parser").find(
-        "link", attrs={"rel": "search"}
-    )
+    html = bs4.BeautifulSoup(s, features="html.parser")
+    link = html.find("link", attrs={"rel": "search"})
     href = link.attrs["href"]
     href = urllib.parse.urlparse(href)
     base_url = urllib.parse.urlparse(base_url)
@@ -54,12 +65,63 @@ class OpenSearch:
             )
         }
 
+    def html_form(self):
+        search = self.urls["text/html"]
+        url = search.template
+        url = urllib.parse.urlparse(url)
+        query = url.query
+        query = urllib.parse.parse_qs(query)
+        search_term_parameters = [
+            parameter
+            for parameter, value in query.items()
+            if value[0] == "{searchTerms}"
+        ]
+        assert len(search_term_parameters) == 1, (
+            f"parameter with {{searchTerms}} not found in {query}"
+        )
+        search_term_parameter = search_term_parameters[0]
+        other_inputs = [
+            htmlgenerator.INPUT(name=parameter, value=value[0], _type="hidden")
+            for parameter, value in query.items()
+            if parameter != search_term_parameter
+        ]
+        return htmlgenerator.FORM(
+            htmlgenerator.LABEL(
+                self.short_name,
+                htmlgenerator.INPUT(
+                    name=search_term_parameter,
+                ),
+            ),
+            *other_inputs,
+            htmlgenerator.INPUT(_type="submit"),
+            method=search.method.upper(),
+            action=url._replace(query=None).geturl(),
+        )
+
 
 class OpenSearchUrl:
     def __init__(self, element):
         self.type_ = element.attrib["type"]
-        self.method = element.attrib["method"]
+        self.method = element.attrib.get("method", "GET")
         self.template = element.attrib["template"]
 
     def __repr__(self):
         return repr(self.__dict__)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("toml", type=pathlib.Path)
+    args = parser.parse_args()
+
+    toml = tomllib.loads(args.toml.read_text())
+    search = toml["search"]
+    forms = [opensearch_from_url(s).html_form() for s in search]
+    print(
+        htmlgenerator.render(
+            htmlgenerator.HTML(
+                htmlgenerator.BODY(*forms),
+            ),
+            {},
+        )
+    )

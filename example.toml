@@ -1,0 +1,7 @@
+search = [
+       "https://en.wikipedia.org",
+       "https://es.wikipedia.org",
+       "https://kagi.com/opensearch.xml",
+       "https://www.qwant.com",
+       "https://ca.wikipedia.org",
+]
