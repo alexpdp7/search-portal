@@ -17,6 +17,8 @@ The following command generates the HTML for a portal defined by the search engi
 $ pipx run --spec git+https://github.com/alexpdp7/search-portal search-portal <(curl https://raw.githubusercontent.com/alexpdp7/search-portal/refs/heads/main/example.toml)
 ```
 
+You can view the result at <https://alexpdp7.github.io/search-portal/>.
+
 ## TODO
 
 * Sites without OpenSearch, like:
