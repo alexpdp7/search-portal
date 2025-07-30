@@ -120,6 +120,27 @@ def main():
     print(
         htmlgenerator.render(
             htmlgenerator.HTML(
+                htmlgenerator.HEAD(
+                    htmlgenerator.META(name="viewport", content="width=device-width, initial-scale=1.0"),
+                    htmlgenerator.STYLE(
+                        """
+                        body {
+                          max-width: 40em;
+                          margin-left: auto;
+                          margin-right: auto;
+                          padding-left: 2em;
+                          padding-right: 2em;
+                          line-height: 1.6em;
+                          font-size: 20px;
+                        }
+                        label, input {
+                          display: block;
+                          width: 100%;
+                          margin-bottom: 1em;
+                        }
+                        """
+                    )
+                ),
                 htmlgenerator.BODY(*forms),
             ),
             {},
