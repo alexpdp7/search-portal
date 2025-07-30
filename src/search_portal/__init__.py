@@ -122,7 +122,9 @@ def main():
             htmlgenerator.HTML(
                 htmlgenerator.HEAD(
                     htmlgenerator.TITLE("Search"),
-                    htmlgenerator.META(name="viewport", content="width=device-width, initial-scale=1.0"),
+                    htmlgenerator.META(
+                        name="viewport", content="width=device-width, initial-scale=1.0"
+                    ),
                     htmlgenerator.STYLE(
                         """
                         body {
@@ -143,7 +145,7 @@ def main():
                           height: 3.5em;
                         }
                         """
-                    )
+                    ),
                 ),
                 htmlgenerator.BODY(*forms),
             ),
