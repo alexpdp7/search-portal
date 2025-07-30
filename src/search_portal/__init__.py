@@ -121,6 +121,7 @@ def main():
         htmlgenerator.render(
             htmlgenerator.HTML(
                 htmlgenerator.HEAD(
+                    htmlgenerator.TITLE("Search"),
                     htmlgenerator.META(name="viewport", content="width=device-width, initial-scale=1.0"),
                     htmlgenerator.STYLE(
                         """
