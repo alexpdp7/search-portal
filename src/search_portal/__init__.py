@@ -138,6 +138,9 @@ def main():
                           width: 100%;
                           margin-bottom: 1em;
                         }
+                        input {
+                          height: 3.5em;
+                        }
                         """
                     )
                 ),
