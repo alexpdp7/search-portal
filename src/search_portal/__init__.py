@@ -119,9 +119,7 @@ class GenericSearch:
         query = url.query
         query = urllib.parse.parse_qs(query)
         search_term_parameters = [
-            parameter
-            for parameter, value in query.items()
-            if value[0] == "%s"
+            parameter for parameter, value in query.items() if value[0] == "%s"
         ]
         assert len(search_term_parameters) == 1, (
             f"parameter with %s not found in {query}"
@@ -183,7 +181,17 @@ def main():
                         """
                     ),
                 ),
-                htmlgenerator.BODY(*forms),
+                htmlgenerator.BODY(
+                    *(
+                        forms
+                        + [
+                            htmlgenerator.A(
+                                "search-portal",
+                                href="https://github.com/alexpdp7/search-portal",
+                            ),
+                        ]
+                    )
+                ),
             ),
             {},
         )
