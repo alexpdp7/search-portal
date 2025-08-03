@@ -109,6 +109,42 @@ class OpenSearchUrl:
         return repr(self.__dict__)
 
 
+class GenericSearch:
+    def __init__(self, d):
+        self.d = d
+
+    def html_form(self):
+        url = self.d["search_url_template"]
+        url = urllib.parse.urlparse(url)
+        query = url.query
+        query = urllib.parse.parse_qs(query)
+        search_term_parameters = [
+            parameter
+            for parameter, value in query.items()
+            if value[0] == "%s"
+        ]
+        assert len(search_term_parameters) == 1, (
+            f"parameter with %s not found in {query}"
+        )
+        search_term_parameter = search_term_parameters[0]
+        return htmlgenerator.FORM(
+            htmlgenerator.LABEL(
+                self.d["name"],
+                htmlgenerator.INPUT(
+                    name=search_term_parameter,
+                ),
+            ),
+            htmlgenerator.INPUT(_type="submit"),
+            action=url._replace(query=None).geturl(),
+        )
+
+
+def form_from_url(s):
+    if isinstance(s, dict):
+        return GenericSearch(s).html_form()
+    return opensearch_from_url(s).html_form()
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("toml", type=pathlib.Path)
@@ -116,7 +152,7 @@ def main():
 
     toml = tomllib.loads(args.toml.read_text())
     search = toml["search"]
-    forms = [opensearch_from_url(s).html_form() for s in search]
+    forms = [form_from_url(s) for s in search]
     print(
         htmlgenerator.render(
             htmlgenerator.HTML(
