@@ -18,3 +18,7 @@ $ pipx run --spec git+https://github.com/alexpdp7/search-portal search-portal <(
 ```
 
 You can view the result at <https://alexpdp7.github.io/search-portal/>.
+
+## Alternatives
+
+* https://mozilla.github.io/policy-templates/#searchengines
