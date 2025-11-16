@@ -2,7 +2,7 @@ search = [
        "https://en.wikipedia.org",
        "https://es.wikipedia.org",
        "https://kagi.com/opensearch.xml",
-       "https://www.imdb.com/opensearch.xml",
+       { name = "IMDB", search_url_template = "https://www.imdb.com/find/?ref_=opensearch&amp;q=%s" },
        { name = "Diccionario de la lengua española / Real Academia Española", search_url_template = "https://dle.rae.es/?w=%s" },
        "https://en.wiktionary.org",
        "https://es.wiktionary.org",
