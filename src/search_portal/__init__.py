@@ -9,13 +9,15 @@ import htmlgenerator
 import httpx
 
 
+HEADERS = {"user-agent": "search-portal builds portals with search forms, extracting OpenSearch configuration (https://github.com/alexpdp7/search-portal)"}
+
 def opensearch_from_url(url):
     try:
-        return OpenSearch(httpx.get(find_search_on_url(url)).read())
+        return OpenSearch(httpx.get(find_search_on_url(url), headers=HEADERS).read())
     except:
         pass
     try:
-        return OpenSearch(httpx.get(url).read())
+        return OpenSearch(httpx.get(url, headers=HEADERS).read())
     except:
         pass
     raise Exception(f"could not find opensearch on {url}")
@@ -26,7 +28,7 @@ def find_search_on_url(url):
     >>> find_search_on_url("https://eu.wikipedia.org")
     'https://eu.wikipedia.org/w/rest.php/v1/search'
     """
-    html = httpx.get(url, follow_redirects=True)
+    html = httpx.get(url, follow_redirects=True, headers=HEADERS)
     return find_search_on_html(html, url)
 
 
